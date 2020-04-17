@@ -15,8 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/jenkruk/constructor-word-guess.git"
   },
-  "author": "Jen Kruk",
-  "license": "MIT",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/jenkruk/constructor-word-guess/issues"
   },

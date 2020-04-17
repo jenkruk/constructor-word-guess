@@ -1,7 +1,7 @@
-// REQUIRED word.js, inquirer & chalk
+// REQUIRED word.js, inquirer
 var Word  = require("./word.js");
 var inquirer = require("inquirer");
-var colors  = require("chalk");
+var chalk = require("chalk");
 
 var movies = [
     "The Terminator", 
@@ -71,14 +71,14 @@ function wordGuessed(){
 function guessPrompt(){
     // IF ALL GUESSES HAVE BEEN USED UP, ALERT THE USER AND ASK IF THEY WANT TO PLAY AGAIN
     if (guessesLeft <= 0){
-        console.log("Better luck next time!");
+        console.log(chalk.blue("Better luck next time!\r\n"));
         playAgain();
     }
     // DISPLAY PROMPT IF THE WORD HAS NOT BEEN GUESSED
     else if(!wordGuessed()){
         // IF IT IS THE FIRST GAME, DISPLAY THE WORD AT THE START OF THE GAME
         if(firstGame){
-        console.log("\r\nTry to guess the classic 80's movie!\r\n");
+        console.log(chalk.blueBright("\r\nTry to guess the classic 80's movie!\r\n"));
         currentWord.displayWord();
         firstGame = false;
         }
@@ -87,13 +87,13 @@ function guessPrompt(){
             {
                 type: "input",
                 name: "guess",
-                message: "Guess a letter: ",
+                message: (chalk.magenta("Guess a letter: ")),
                 
                 // VALIDATION FUNCTION FOR USER INPUT
                 validate: function(input){
                     // CHECK IF USER HAS ALREADY GUESSED THIS LETTER
                     if(guessedLetters.indexOf(input.trim().toUpperCase()) >= 0){
-                        console.log("\n\nYou have already guessed the letter " + (input.trim().toUpperCase()) + " Try again!\n\n");
+                        console.log(chalk.red("\n\nYou have already guessed the letter " + (input.trim().toUpperCase()) + " Try again!\n\n"));
                         return false;
                     }
                     // CHECK IF USER INPUT IS A SINGLE LETTER
@@ -102,7 +102,7 @@ function guessPrompt(){
                     }
                     // ASK USER TO CHOOSE A SINGLE LETTER IF THEY HAVEN'T FOLLOWED THE RULES
                     else{
-                        console.log(" Please choose a single letter");
+                        console.log(chalk.red("\n\nPlease choose a single letter\n\n"));
                         return false;
                     }
                 }
@@ -113,12 +113,12 @@ function guessPrompt(){
             currentWord.displayWord();
             // LET USER KNOW IF THEIR GUESS WAS CORRECT OR NOT
             if (currentWord.checkGuess(user.guess)){
-                console.log("\n\nCORRECT!\n\n");
+                console.log(chalk.cyan("\n\nCORRECT!\n\n"));
             }
             else{
                 // DECREASE REMAINING GUESSES IF USER GUESS IS INCORRECT, DISPLAY GUESSES LEFT
                 guessesLeft--;
-                console.log("\n\nINCORRECT! You have " + guessesLeft + " guesses left!\n\n");
+                console.log((chalk.yellow("\n\nINCORRECT!")) + (chalk.green(" You have " + guessesLeft + " guesses left!\n\n")));
             }
             // STORE USER'S GUESS IN AN ARRAY SO IT CANNOT BE CHOSEN AGAIN
             guessedLetters.push(user.guess.trim().toUpperCase());
@@ -128,7 +128,7 @@ function guessPrompt(){
     }
     else{
         // IF USER HAS GUESSED THE WORD, LET THEM KNOW AND ASK THEM IF THEY WANT TO PLAY AGAIN
-        console.log("\r\nYou won!\r\n");
+        console.log(chalk.greenBright("\r\nYOU WON!\r\n"));
         playAgain();
     }
 }
@@ -139,7 +139,7 @@ function playAgain(){
         {
             type: "confirm",
             name: "confirm",
-            message: "Would you like to play again?",
+            message: (chalk.magenta("Would you like to play again?")),
             default: true
         }
     ]).then(function(user){
