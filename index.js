@@ -35,7 +35,7 @@ var movies = [
 
 var currentWord;
 var alphabet = /[a-zA-Z]/; //This is using 'regex', or 'regular expression'
-var guessesLeft = 5;
+var guessesLeft = 8;
 var guessedLetters = [];
 var usedWords = [];
 var firstGame = true;
@@ -50,7 +50,7 @@ function randomWord() {
     } else if(usedWords.length !== movies.length) {
         randomWord();
     }  else {
-        console.log("There are no more movies left to guess!");
+        console.log(chalk.blueBright("There are no more movies left to guess!"));
         playAgain();
     }
 }
@@ -111,7 +111,7 @@ function guessPrompt(){
             // CHECKS USER'S GUESS AND DISPLAY WORD
             currentWord.checkGuess(user.guess);
             currentWord.displayWord();
-            // LET USER KNOW IF THEIR GUESS WAS CORRECT OR NOT
+            // LETS USER KNOW IF THEIR GUESS WAS CORRECT OR NOT
             if (currentWord.checkGuess(user.guess)){
                 console.log(chalk.cyan("\n\nCORRECT!\n\n"));
             }
