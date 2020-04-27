@@ -1,12 +1,20 @@
+
+// space for easier readability
+
+
 // REQUIRED word.js, inquirer
 var Word  = require("./word.js");
 var inquirer = require("inquirer");
 var chalk = require("chalk");
 
+var randomWord;
+var remaining = 7;
+var guessedLetters = [];
+
 var movies = [
-    "The Terminator", 
+   "The Terminator", 
     "National Lampoon’s Vacation",
-    "The Little Mermaid",
+    "The Little Mermaid", 
     "Who Framed Roger Rabbit",
     "Gremlins",
     "Ghostbusters",
@@ -32,134 +40,101 @@ var movies = [
     "Pretty in Pink",
     "The Lost Boys"
     ];
-
-var currentWord;
-var alphabet = /[a-zA-Z]/; //This is using 'regex', or 'regular expression'
-var guessesLeft = 8;
-var guessedLetters = [];
-var usedWords = [];
-var firstGame = true;
-
-// FUNCTION TO GENERATE A RANDOM WORD
-function randomWord() {
-    var selectedWord = movies[Math.floor(Math.random() * movies.length)];
-    if(usedWords.indexOf(selectedWord) < 0){
-        currentWord = new Word();
-        currentWord.makeWord(selectedWord);
-        usedWords.push(selectedWord);
-    } else if(usedWords.length !== movies.length) {
-        randomWord();
-    }  else {
-        console.log(chalk.blueBright("There are no more movies left to guess!"));
-        playAgain();
-    }
-}
-
-function wordGuessed(){
-    var word = currentWord.wordArray;
-    // LOOPS THROUGH THE WORD CHOICES ARRAY AND ANY UNGUESSED LETTERS
-    for(var i = 0; i < word.length; i++){
-        if(!word[i].guessed && word[i] !== " "){
-            return false;
-        }
-    }
-    // RETURN TRUE IF ALL THE LETTERS HAVE BEEN GUESSED
-    return true;
-}
-
-// INQUIRER FUNCTION THAT PROMPTS THE USER FOR INPUT
-function guessPrompt(){
-    // IF ALL GUESSES HAVE BEEN USED UP, ALERT THE USER AND ASK IF THEY WANT TO PLAY AGAIN
-    if (guessesLeft <= 0){
-        console.log(chalk.blue("Better luck next time!\r\n"));
-        playAgain();
-    }
-    // DISPLAY PROMPT IF THE WORD HAS NOT BEEN GUESSED
-    else if(!wordGuessed()){
-        // IF IT IS THE FIRST GAME, DISPLAY THE WORD AT THE START OF THE GAME
-        if(firstGame){
-        console.log(chalk.blueBright("\r\nTry to guess the classic 80's movie!\r\n"));
-        currentWord.displayWord();
-        firstGame = false;
-        }
-        // USE INQUIRER PROMPT TO ASK FOR USER INPUT
-        inquirer.prompt([
-            {
-                type: "input",
-                name: "guess",
-                message: (chalk.magenta("Guess a letter: ")),
-                
-                // VALIDATION FUNCTION FOR USER INPUT
-                validate: function(input){
-                    // CHECK IF USER HAS ALREADY GUESSED THIS LETTER
-                    if(guessedLetters.indexOf(input.trim().toUpperCase()) >= 0){
-                        console.log(chalk.red("\n\nYou have already guessed the letter " + (input.trim().toUpperCase()) + " Try again!\n\n"));
-                        return false;
-                    }
-                    // CHECK IF USER INPUT IS A SINGLE LETTER
-                    else if(alphabet.test(input) && input.trim().length === 1){
-                        return true;
-                    }
-                    // ASK USER TO CHOOSE A SINGLE LETTER IF THEY HAVEN'T FOLLOWED THE RULES
-                    else{
-                        console.log(chalk.red("\n\nPlease choose a single letter\n\n"));
-                        return false;
-                    }
-                }
-            }
-        ]).then(function(user){
-            // CHECKS USER'S GUESS AND DISPLAY WORD
-            currentWord.checkGuess(user.guess);
-            currentWord.displayWord();
-            // LETS USER KNOW IF THEIR GUESS WAS CORRECT OR NOT
-            if (currentWord.checkGuess(user.guess)){
-                console.log(chalk.cyan("\n\nCORRECT!\n\n"));
-            }
-            else{
-                // DECREASE REMAINING GUESSES IF USER GUESS IS INCORRECT, DISPLAY GUESSES LEFT
-                guessesLeft--;
-                console.log((chalk.yellow("\n\nINCORRECT!")) + (chalk.green(" You have " + guessesLeft + " guesses left!\n\n")));
-            }
-            // STORE USER'S GUESS IN AN ARRAY SO IT CANNOT BE CHOSEN AGAIN
-            guessedLetters.push(user.guess.trim().toUpperCase());
-            guessPrompt();
     
-        })
-    }
-    else{
-        // IF USER HAS GUESSED THE WORD, LET THEM KNOW AND ASK THEM IF THEY WANT TO PLAY AGAIN
-        console.log(chalk.greenBright("\r\nYOU WON!\r\n"));
-        playAgain();
-    }
-}
+    function start() {
+    remaining = 7;
+    guessedLetters = [];
+    console.log(chalk.blue("\nTry to guess the classic '80's movie!"));
+    if(movies.length > 0){
+        // randomly pick a word from the movie array
+        var randomIndex = Math.floor(Math.random() * movies.length);
+        randomWord = movies[randomIndex];
+        movies.splice(randomIndex, 1);
+        // console.log(movies);
+        // console.log(randomWord);
 
-// FUNCTION THAT ASKS USER IF THEY WANT TO PLAY AGAIN
-function playAgain(){
-    inquirer.prompt([
-        {
+        // turn the movie into a word object using the Word Constructor
+        randomWord = new Word(randomWord);
+        // console.log(randomWord);
+
+        // display the underscores for the random chosen movie (in Word Constructor)
+        console.log("\n", randomWord.display(), "\n")
+        askUser();
+        } else {
+            console.log("\nThere are no more movies left to guess.  Game over.");
+        }
+    };
+
+    function playAgain(){
+        inquirer
+        .prompt([
+            {name: "playAgain",
             type: "confirm",
-            name: "confirm",
-            message: (chalk.magenta("Would you like to play again?")),
-            default: true
+            message: chalk.magenta("Would you like to play again?\n "),
         }
-    ]).then(function(user){
-        // IF USER WANTS TO PLAY AGAIN, START THE GAME OVER WITH A NEW WORD
-        if(user.confirm){
-            firstGame = true;
-            guessedLetters = [];
-            guessesLeft = 10;
-            randomWord();
-            guessPrompt();
-            if(usedWords.length === movies.length){
-                usedWords = [];
+        ]).then(function(answer){
+            // console.log(answer.playAgain);
+            if (answer.playAgain) {
+                start();
+            } else {
+                console.log(chalk.blueBright("\nGame Over. Thanks for playing!\n"));
             }
-        }
-        // END THE GAME IF THE USER DOES NOT WANT TO PLAY AGAIN
-        else{
-            console.log("Thank you for playing!");
-        }
-    })
-}
+        });
+    };
 
-randomWord();
-guessPrompt();
+    // prompt the user to pick a letter
+    function askUser(){
+        inquirer
+        .prompt([
+            {name: "userInput",
+            type: "input",
+            message: chalk.magenta("Guess a letter: "),
+        }
+        ]).then(function(answer){
+            // create a variable for the users input for ease of calling later
+            // in the Letter constructor - also changed the character (line 8 to upperCase)
+            // !!! This was toLowerCase as was character (line 19) in the letter constructor
+            var userInput = answer.userInput.toUpperCase(); 
+
+            // If the user's input is already in the guessedLetters array, alert user that they have already guessed that letter
+            // Prompt the user to pick another letter
+            if (guessedLetters.includes(userInput)){
+                console.log("\nYou've already guessed the letter " + chalk.red(userInput.toUpperCase()), "Try again!\n");
+                askUser();
+            } else {
+            // add the letter from the userInput into the guessedLetters array
+            guessedLetters.push(userInput);
+
+            // check whether the letter is correct or not (using checkLetter from the Word Constructor - which gets it from Letter.js)
+            randomWord.check(userInput);
+
+            // if the letter is correct, display it
+            var display = randomWord.display();
+            console.log("\n", display);
+
+            // handle incorrect guess
+            if(!display.includes(userInput)){
+                remaining--;
+                // keep track of the number of guesses left
+                console.log(chalk.yellow("\nINCORRECT! "), chalk.green("You have", remaining, "guesses left!\n"));
+            }
+            // handle correct guess 
+            else {
+                console.log(chalk.cyan("\nCORRECT!\n"));
+            }
+            // handle win
+            if(!display.includes("_")) {
+                console.log(chalk.greenBright("You Won!\n"));
+                playAgain();
+            } else if (remaining > 0) {
+                askUser();
+            } 
+            else {
+            // handle loss
+                console.log(chalk.blue("Better Luck Next Time!\n"));
+                playAgain();
+            };
+        };
+        });
+    };
+    start();

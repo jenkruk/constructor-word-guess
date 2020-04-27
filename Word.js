@@ -1,44 +1,35 @@
-var Letter = require("./letter");
+// space for easier readability
 
-function Word() {
-    this.wordArray = [],
-    this.makeWord = function(currentWord) {
-        for (var i = 0; i < currentWord.length; i++) {
-            if (currentWord[i] !== " ") {
-                var letterObject = new Letter(currentWord[i]);
-                this.wordArray.push(letterObject);
-            } else {
-                this.wordArray.push(" ");
+// space for easier readability
+
+var Letter = require("./Letter.js");
+
+function Word (str){
+    // creates the word object
+    this.word = str.split("").map(function(char){
+        return new Letter(char);
+    });
+    // displays the word / underlines
+    this.display = function(){
+        return this.word.map(function(letters){
+            return letters.displayLetter();
+        }).join(" "); // space between each letter or underscore for clarity
+    };
+    // returns the character or underscore
+    this.check = function(char) {
+        this.word.forEach(function(letters){
+            letters.checkLetter(char);
+            if (char === " ") {
+                return " ";
             }
-        }
-    }
-    this.displayWord = function() {
-        var word = [];
-        for (var i = 0; i < this.wordArray.length; i++) {
-            if (this.wordArray[i] !== " ") {
-                var letterString = this.wordArray[i].toString();
-                word.push(letterString);
-            } else {
-                word.push(" ");
-            }
-        }
-        console.log("\r\n" + word.join(" ") + "\r\n");
-    }
-    this.checkGuess = function(input) {
-        var correctGuess = false;
-        for (var i = 0; i < this.wordArray.length; i++) {
-            if (this.wordArray[i] !== " ") {
-                if (this.wordArray[i].checkLetter(input)) {
-                    correctGuess = true;
-                }
-            }
-        }
-        if (correctGuess) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
+        });
+    };
+};
+// var x = new Word ("mom");
+// console.log(x);
+
+// console.log(x.display());
+// x.check("m");
+// console.log(x.display());
 
 module.exports = Word;

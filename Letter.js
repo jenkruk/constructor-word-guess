@@ -1,22 +1,24 @@
-function Letter(letter) {
-    this.letter = letter,
-    this.guessed = false,
-    this.toString = function() {
-        if (this.guessed) {
-            return this.letter.toUpperCase();
-        } else {
-            return "_";
-            } 
-        },
 
-    this.checkLetter = function(input) {
-        if (input.toUpperCase() === this.letter.toUpperCase()) {
-            this.guessed = true;
-            return true;
+// space for easier readability
+
+var letters = /[a-zA-Z]/;
+
+function Letter (character) {
+    this.character = character.toUpperCase(); // if toLowerCase() was added here - all the characters would show as lower case
+    this.guess = false;
+    this.displayLetter = function() {
+        if(this.guess === false && (this.character.search(letters) !== -1)){
+            return "_";
         } else {
-            return false;
-        }
-    }
-}
+            return this.character;
+        };
+    };
+    this.checkLetter = function(char) {
+        //!!! took out .toLowerCase after character and changed line 8 to upperCase to handle bug
+        if(char === this.character) {  
+            this.guess = true;
+        };
+    };
+};
 
 module.exports = Letter;
