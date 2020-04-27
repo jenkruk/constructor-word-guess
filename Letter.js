@@ -1,10 +1,10 @@
 
 // space for easier readability
 
-var letters = /[a-zA-Z]/;
+var letters = /[a-zA-Z]/; // regular expression
 
 function Letter (character) {
-    this.character = character.toUpperCase(); // if toLowerCase() was added here - all the characters would show as lower case
+    this.character = character.toUpperCase();
     this.guess = false;
     this.displayLetter = function() {
         if(this.guess === false && (this.character.search(letters) !== -1)){

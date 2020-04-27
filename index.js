@@ -99,7 +99,7 @@ var movies = [
             // If the user's input is already in the guessedLetters array, alert user that they have already guessed that letter
             // Prompt the user to pick another letter
             if (guessedLetters.includes(userInput)){
-                console.log("\nYou've already guessed the letter " + chalk.red(userInput.toUpperCase()), "Try again!\n");
+                console.log("\nYou've already guessed the letter " + chalk.red(userInput.toUpperCase()), ". Try again!\n");
                 askUser();
             } else {
             // add the letter from the userInput into the guessedLetters array
